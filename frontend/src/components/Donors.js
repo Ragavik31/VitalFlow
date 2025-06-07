@@ -7,23 +7,28 @@ const styleScript = `
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 `;
 
-// Add this script to the document head (only once, for demo purposes)
 if (document.head.innerHTML.indexOf('bootstrap.min.css') === -1) {
   document.head.insertAdjacentHTML('beforeend', styleScript);
 }
 
 function Donors() {
-  // State for donors and form data
   const [donors, setDonors] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
     bloodType: '',
     contact: '',
+    city: '', // New field
     lastDonation: '',
   });
   const [submitStatus, setSubmitStatus] = useState(null);
 
-  // Fetch donors from database
+  // List of major cities in Tamil Nadu for the dropdown
+  const tamilNaduCities = [
+    'Chennai', 'Coimbatore', 'Madurai', 'Tiruchirappalli', 'Salem', 'Tirunelveli', 'Vellore', 'Erode', 
+    'Thoothukudi', 'Dindigul', 'Thanjavur', 'Karur', 'Nagercoil', 'Kanyakumari', 'Kanchipuram', 
+    'Namakkal', 'Sivakasi', 'Virudhunagar', 'Cuddalore', 'Tiruppur'
+  ];
+
   useEffect(() => {
     axios.get('http://localhost:5000/api/donors')
       .then(response => {
@@ -35,13 +40,11 @@ function Donors() {
       });
   }, []);
 
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Handle form submission to add donor
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -51,8 +54,7 @@ function Donors() {
       return;
     }
 
-    // Additional client-side check for required fields
-    if (!formData.name || !formData.bloodType || !formData.contact) {
+    if (!formData.name || !formData.bloodType || !formData.contact || !formData.city) {
       setSubmitStatus('error');
       console.log('Missing required fields:', formData);
       return;
@@ -65,8 +67,7 @@ function Donors() {
       });
       console.log('Server response:', response.data);
       setSubmitStatus('success');
-      setFormData({ name: '', bloodType: '', contact: '', lastDonation: '' }); // Reset form
-      // Refresh donor list
+      setFormData({ name: '', bloodType: '', contact: '', city: '', lastDonation: '' });
       const newResponse = await axios.get('http://localhost:5000/api/donors');
       setDonors(newResponse.data);
     } catch (error) {
@@ -75,7 +76,6 @@ function Donors() {
     }
   };
 
-  // Custom CSS (embedded in a <style> tag for this example)
   const customStyles = `
     .donors-header {
       background: linear-gradient(135deg, #6b48ff, #ff6b6b);
@@ -162,10 +162,8 @@ function Donors() {
 
   return (
     <div className="min-vh-100">
-      {/* Custom CSS */}
       <style>{customStyles}</style>
 
-      {/* Header Section */}
       <header className="donors-header text-center">
         <div className="container">
           <h1 className="display-4 fw-bold">Donors</h1>
@@ -175,12 +173,10 @@ function Donors() {
         </div>
       </header>
 
-      {/* Donors Content */}
       <div className="donors-container">
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-12 main-content">
-              {/* Donor List */}
               <h2 className="section-title">1. Our Donors</h2>
               <div className="donor-table">
                 <table className="table table-striped table-hover">
@@ -190,6 +186,7 @@ function Donors() {
                       <th>Name</th>
                       <th>Blood Type</th>
                       <th>Contact</th>
+                      <th>City</th>
                       <th>Last Donation</th>
                     </tr>
                   </thead>
@@ -200,6 +197,7 @@ function Donors() {
                         <td>{donor.name}</td>
                         <td>{donor.bloodType}</td>
                         <td>{donor.contact}</td>
+                        <td>{donor.city || 'N/A'}</td>
                         <td>{donor.lastDonation || 'N/A'}</td>
                       </tr>
                     ))}
@@ -207,7 +205,6 @@ function Donors() {
                 </table>
               </div>
 
-              {/* Add Donor Form */}
               <h2 className="section-title">2. Add New Donor</h2>
               <div className="donor-form">
                 <form className="needs-validation" noValidate onSubmit={handleSubmit}>
@@ -259,6 +256,23 @@ function Donors() {
                     />
                     <div className="invalid-feedback">Please enter a contact number or email.</div>
                   </div>
+                  <div className="form-group mb-3">
+                    <label htmlFor="city">City (Tamil Nadu)</label>
+                    <select
+                      className="form-control"
+                      id="city"
+                      name="city"
+                      value={formData.city}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">Select City</option>
+                      {tamilNaduCities.map((city) => (
+                        <option key={city} value={city}>{city}</option>
+                      ))}
+                    </select>
+                    <div className="invalid-feedback">Please select a city in Tamil Nadu.</div>
+                  </div>
                   <div className="form-group mb-4">
                     <label htmlFor="lastDonation">Last Donation (Optional)</label>
                     <input
@@ -286,7 +300,6 @@ function Donors() {
         </div>
       </div>
 
-      {/* Footer */}
       <footer className="footer-bg">
         <div className="container text-center">
           <p>© {new Date().getFullYear()} Vital Flow. All rights reserved.</p>

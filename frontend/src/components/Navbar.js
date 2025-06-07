@@ -23,6 +23,7 @@ function Navbar({ isAuthenticated, setIsAuthenticated }) {
         {isAuthenticated ? (
           <>
             <li><Link to="/dashboard">Dashboard</Link></li>
+            <li><Link to="/map">Map Search</Link></li> {/* Added link to MapSearch */}
             <li>
               <button
                 onClick={handleLogout}

@@ -111,10 +111,9 @@ function About() {
       <footer className="footer-bg">
         <div className="container text-center">
           <p>© {new Date().getFullYear()} Vital Flow. All rights reserved.</p>
-          <div className="mt-2">
-            <a href="/" className="me-3">Home</a>
-            <a href="/privacy">Privacy Policy</a>
-            <a href="/contact">Contact Us</a>
+          <div className="mt-2"><p>
+            <a href="/" className="me-3">Home  </a> <a href="/privacy">Privacy Policy  </a>  <a href="/contact">Contact Us</a>
+            </p>
           </div>
         </div>
       </footer>
