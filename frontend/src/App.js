@@ -16,7 +16,6 @@ import './App.css';
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState('');
-
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     const storedUsername = localStorage.getItem('username');
