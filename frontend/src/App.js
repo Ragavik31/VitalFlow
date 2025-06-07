@@ -10,6 +10,7 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import Dashboard from './components/Dashboard';
 import Privacy from './components/Privacy';
+import Map from './components/MapSearch';
 import './App.css';
 
 function App() {
@@ -51,6 +52,7 @@ function App() {
           element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} 
         />
         <Route path="*" element={<Navigate to="/" />} />
+        <Route path="/map" element={<Map />} />
       </Routes>
     </div>
   );
